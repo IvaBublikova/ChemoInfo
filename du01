@@ -1,0 +1,40 @@
+!pip install rdkit
+
+from rdkit import Chem
+from rdkit.Chem import AllChem
+from rdkit import DataStructs
+import pandas as pd
+
+##1) load dataset in a Jupyter notebook and extract relevant column to be processed
+data = pd.read_csv("ChemInfo/compounds.csv", delimiter=';')
+print(data.head(3))
+column_smile = data['smiles']
+print(column_smile.head(3))
+
+##2) compute molecular fingerprints for each compound
+fingerprints = []
+for smiles in data['smiles']:
+    molecule = Chem.MolFromSmiles(smiles)
+    if molecule:
+        fp = AllChem.GetMorganFingerprint(molecule, 2)
+        fingerprints.append(fp)
+    else:
+        fingerprints.append(None)
+print("Délka seznamu :", len(fingerprints))       
+for i in range(8):  
+    print(f"Otisk molekuly {i+1}: {fingerprints[i]}")
+
+##3) compute Tanimoto similarity measure for each pair of compound x reference compound
+ref_smiles = "C1=CC(=C(C=C1CC(C(=O)O)N)O)O"
+ref_molecule = Chem.MolFromSmiles(ref_smiles)
+ref_fp = AllChem.GetMorganFingerprint(ref_molecule, 2)
+tanimoto = [DataStructs.TanimotoSimilarity(ref_fp, fp) for fp in fingerprints]
+print("Tanimoto similarity: ", tanimoto)
+
+##4) provide sorting, report top 3 hits and discuss your results (with reference to the first lecture and limitations)
+sorted_indices = sorted(range(len(tanimoto)), key=lambda i: tanimoto[i], reverse=True)
+top_hits = sorted_indices[:3]
+print("Top 3:")
+for i, index in enumerate(top_hits, 1):
+    similarity = tanimoto[index]
+    print(f"Hit {i}: Compound {index + 1} (Similarity: {similarity})")
