@@ -38,3 +38,9 @@ print("Top 3:")
 for i, index in enumerate(top_hits, 1):
     similarity = tanimoto[index]
     print(f"Hit {i}: Compound {index + 1} (Similarity: {similarity})")
+Diskuze:
+Výsledky Tanimotovy podobnosti ukazují, že v našem datasuti jsou látky s vysokou podobností s referenční látkou (0,97; 0,71; 0,7).
+Látka s podobností 0,97 vypovídá o velmi podobné chemické strukturální podobnosti, zbylé dvě o určité vyšší/střední míře podobnosti.
+Tento výsledek bylo možné získat během ani ne sekundy k porovnání látek pomocí Tanimotovy podobnosti.
+Nevýhodou může být různou odezvou živých orgánů na chemicky podobné látky (najdeme chem. látku velmi podobnou, ale místo úlevy do bolesti může pacienta toxikovat)
+Interpretace výsledků může být značně individuální
